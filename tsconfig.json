@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": [
+      "dom",
+      "esnext"
+    ],
+    "target": "esnext",
+    "outDir": "./lib",
+    "removeComments": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "preserveConstEnums": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "typeRoots" : ["./node_modules/@types", "./typings", "./node_modules/@polkadot/ts"]
+  },
+  "include": [
+    "src/**/*", "types.d.ts", "legacy"
+  ],
+  "exclude": [
+    "node_modules/**/*",
+    "**/*-spec.ts"
+  ]
+}

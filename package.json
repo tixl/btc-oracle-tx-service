@@ -1,0 +1,20 @@
+{
+  "name": "oracle-tx-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Tixl Team <team@tixl.me>",
+  "license": "MIT",
+  "scripts": {
+    "start": "forever ./lib",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "forever": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.7",
+    "typescript": "^3.9.7"
+  }
+}
