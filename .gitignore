@@ -1,10 +1,8 @@
 node_modules/
 error.log
 .env
-*.sqlite
 /tmp
 /lib
 dockerBuild.npmrc
 /mount
 .idea
-deps.jpg
