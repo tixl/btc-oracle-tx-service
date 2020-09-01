@@ -1,6 +1,6 @@
 import express from 'express';
 import { FullServiceHandlers, AssetTransactionData } from './types';
-import { BcoinHandlers } from './implementations';
+import { BcoinHandlers, BlockcyperHandlers } from './implementations';
 require('dotenv').config();
 
 const app = express();
@@ -9,10 +9,17 @@ app.use(express.json());
 let handlers: FullServiceHandlers;
 switch (process.env.SOURCE) {
   case 'BCOIN': {
+    console.log('USING BCOIN')
     handlers = BcoinHandlers;
     break;
   }
+  case 'BLOCKCYPHER': {
+    console.log('USING BLOCKCYPHER')
+    handlers = BlockcyperHandlers;
+    break;
+  }
   default:
+    console.log('USING BCOIN')
     handlers = BcoinHandlers;
 }
 
