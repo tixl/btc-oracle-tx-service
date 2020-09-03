@@ -31,6 +31,7 @@ export interface OracleInterface {
 
 export type PartialTransaction = {
   toSign: string[];
+  hex: string
 } & any;
 
 export type FullTransaction = object;
