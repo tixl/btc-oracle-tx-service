@@ -1,26 +1,25 @@
 import { PartialTransaction, FullTransaction } from '../../../types';
-import axios from 'axios';
 
-export async function combineTxSigs(_partialTx: PartialTransaction, _signatures: string): Promise<FullTransaction | null> {
-  const wallet = 'mywallet';
-  const walleturl = `${process.env.BCOIN_URL}/wallet`
-  try {
-    const res = await axios.post(
-      `${walleturl}/${wallet}/sign`,
-      {
-        tx: _partialTx.hex,
-        passphrase: _signatures
-      },
-      {
-        auth: { username: 'x', password: process.env.BCOIN_PASSWORD || '' },
-      });
+export async function combineTxSigs(
+  _partialTx: PartialTransaction, 
+  _signatures: string[], 
+  _signerPublicKey: string
+): Promise<FullTransaction> {
+  // TODO1: create object full transaction with signature and tosigns
+  // TODO2: sent fullTx to network
+  /**
+   * example object
+   * 
+   * var sendtx = {
+      tx: _partialTx,
+      tosign: [call methond getTosigns()],
+      signatures: [_signatures],
+      pubkeys: [_signerPublicKey]
+    };
+   * 
+   *  */ 
 
-    if (res.status !== 200) {
-      return null
-    }
-    return res.data;
-  } catch (error) {
-    console.log(error);
-    return null
-  }
+  // Takes the signatures of the tosigns created by the 'getTosigns" method and the transaction template
+  // to create a complete transaction that is ready to be sent to the network
+  return {};
 }

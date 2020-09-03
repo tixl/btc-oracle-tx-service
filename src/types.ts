@@ -33,9 +33,7 @@ export type PartialTransaction = {
   toSign: string[];
 } & any;
 
-export type FullTransaction = {
-  hex: string;
-} & object;
+export type FullTransaction = object;
 
 export type SignAndSendStatus = 'OK' | 'INVALID_SIGNATURES' | 'ERROR' | 'ALREADY_KNOWN';
 export type CreateTransactionStatus =

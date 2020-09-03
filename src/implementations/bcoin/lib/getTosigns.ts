@@ -1,28 +1,11 @@
-import axios from 'axios';
-import { AssetTransactionData, PartialTransaction } from '../../../types';
-import { map } from 'lodash';
+import { BcoinTransactionInfo } from './getTx';
 
-export async function getTosigns(_txs: AssetTransactionData[]): Promise<PartialTransaction | null> {
-  const wallet = 'mywallet';
-  const walleturl = `${process.env.BCOIN_URL}/wallet`
-  try {
-    const res = await axios.post(
-      `${walleturl}/${wallet}/create`,
-      {
-        rate: 1000,
-        outputs: map(_txs, item => ({address: item.toAddress, value: Number(item.amount)})),
-        sign: false
-      },
-      {
-        auth: { username: 'x', password: process.env.BCOIN_PASSWORD || '' },
-      });
+export async function getTosigns(_tx: BcoinTransactionInfo): Promise<string[]> {
+  // TODO: Get strings that are ready to be signed from the transaction.
+  // Unsigned transaction object looks like this: https://bcoin.io/api-docs/index.html#create-a-transaction
+  // This should be analogous to the tosigns in the blockcypher API https://www.blockcypher.com/dev/bitcoin/#creating-transactions
 
-    if (res.status !== 200) {
-      return null
-    }
-
-    return res.data;
-  } catch (error) {
-    return null;
-  }
+  // TODO1: encode hex from earch of input from _tx
+  // TODO2: return tosign to array string
+  return [];
 }
