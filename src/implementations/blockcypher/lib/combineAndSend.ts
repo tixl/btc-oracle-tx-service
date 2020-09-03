@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { partial } from 'lodash';
 import { BlockcypherPartialTx } from './createTx';
 
 export async function combineAndSend(partialTx: BlockcypherPartialTx, signatures: string[], publicKey: string) {
