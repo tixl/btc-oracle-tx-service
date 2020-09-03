@@ -5,9 +5,9 @@
     "moduleResolution": "node",
     "lib": [
       "dom",
-      "esnext"
+      "es2017"
     ],
-    "target": "esnext",
+    "target": "es6",
     "outDir": "./lib",
     "removeComments": true,
     "inlineSourceMap": true,
