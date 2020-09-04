@@ -6,8 +6,8 @@ import { map } from 'lodash';
 export async function createTransaction(
   _transactionData: AssetTransactionData[],
 ): Promise<{ status: CreateTransactionStatus; partialTx?: PartialTransaction }> {
-  const wallet = 'mywallet';
-  const walleturl = `${process.env.BCOIN_URL}/wallet`
+  const wallet = 'watchwallet';
+  const walleturl = `${process.env.BCOIN_WALLETURL}/wallet`
   try {
     const res = await axios.post(
       `${walleturl}/${wallet}/create`,
@@ -19,9 +19,9 @@ export async function createTransaction(
       {
         auth: { username: 'x', password: process.env.BCOIN_PASSWORD || '' },
       });
+      console.log(res.data)
 
     if (res.status !== 200) {
-      console.log(res.data)
       return { status: 'ERROR' }
     }
 
@@ -32,7 +32,9 @@ export async function createTransaction(
     if (error?.response?.data?.error?.type == 'FundingError') {
       return { status: 'INSUFFICIENT_FUNDS' };
     }
-    console.log(error);
+    console.log(error)
+
+    console.log(error.response.data);
     return { status: 'ERROR' };
   }
 }
