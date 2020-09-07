@@ -25,6 +25,7 @@ export async function createTransaction(
       return { status: 'ERROR' }
     }
 
+    console.log(JSON.stringify(res.data))
     const toSign = await getTosigns(res.data)
 
     return { status: 'OK', partialTx: { ...res.data, toSign } };
