@@ -1,13 +1,16 @@
 import { BcoinTransactionInfo } from './getTx';
 import { map } from 'lodash';
-import { TransactionBuilder } from 'bitcoinjs-lib';
-
+import { Psbt } from 'bitcoinjs-lib';
 
 export async function getTosigns(_txs: BcoinTransactionInfo): Promise<(string | null)[]> {
   return map(_txs.inputs, input => {
-    const transactionBuilder = new TransactionBuilder();
-    transactionBuilder.addInput(input.prevout.hash, input.prevout.index);
-    const tx = transactionBuilder.buildIncomplete();
-    return tx.getHash().toString('hex');
+    const psbt = new Psbt();
+    psbt.addInput({
+      hash: input.prevout.hash, 
+      index: input.prevout.index
+    });
+    psbt.finalizeAllInputs()
+    const raw = psbt.extractTransaction().toHex();    
+    return raw;
   });
 }
