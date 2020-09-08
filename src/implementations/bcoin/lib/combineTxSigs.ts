@@ -1,11 +1,11 @@
-import { PartialTransaction, FullTransaction } from '../../../types';
+import { PartialTransaction } from '../../../types';
 import { Transaction } from 'bitcoinjs-lib';
 
 export async function combineTxSigs(
   _partialTx: PartialTransaction, 
   _signatures: string[], 
   _signerPublicKey: string
-): Promise<FullTransaction> {
+): Promise<string> {
   const tx = Transaction.fromHex(_partialTx.hex)
 
   _signatures.forEach((signature, index) => {

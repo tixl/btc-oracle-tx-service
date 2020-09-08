@@ -19,9 +19,9 @@ export async function createTransaction(
       {
         auth: { username: 'x', password: process.env.BCOIN_PASSWORD || '' },
       });
+      console.log(res.data)
 
     if (res.status !== 200) {
-      console.log(res.data)
       return { status: 'ERROR' }
     }
 
@@ -32,7 +32,9 @@ export async function createTransaction(
     if (error?.response?.data?.error?.type == 'FundingError') {
       return { status: 'INSUFFICIENT_FUNDS' };
     }
-    console.log(error);
+    console.log(error)
+
+    console.log(error.response.data);
     return { status: 'ERROR' };
   }
 }
