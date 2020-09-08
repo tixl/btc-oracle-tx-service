@@ -17,7 +17,7 @@ export async function signAndSendTransaction(
     const raw = get(signed, 'hex');
     console.log(raw);
     const res = await axios.post(
-      `http://68.183.76.162:18334`,
+      `${process.env.BCOIN_URL}`,
       {
         method: 'sendrawtransaction',
         params: [ raw ]
