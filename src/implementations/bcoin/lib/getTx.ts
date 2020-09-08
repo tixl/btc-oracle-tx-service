@@ -9,6 +9,7 @@ interface Input {
   coin: {
     value: number;
     address: string;
+    script: string
   };
 }
 

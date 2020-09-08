@@ -6,7 +6,7 @@ import { map } from 'lodash';
 export async function createTransaction(
   _transactionData: AssetTransactionData[],
 ): Promise<{ status: CreateTransactionStatus; partialTx?: PartialTransaction }> {
-  const wallet = 'mywallet';
+  const wallet = '20scoops-test';
   const walleturl = `${process.env.BCOIN_URL}/wallet`
   try {
     const res = await axios.post(
@@ -25,7 +25,6 @@ export async function createTransaction(
       return { status: 'ERROR' }
     }
 
-    console.log(JSON.stringify(res.data))
     const toSign = await getTosigns(res.data)
 
     return { status: 'OK', partialTx: { ...res.data, toSign } };
