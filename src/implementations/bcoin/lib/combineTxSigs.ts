@@ -12,5 +12,5 @@ export async function combineTxSigs(
     tx.setInputScript(index, new Buffer(`47${signature}0121${_signerPublicKey}`, 'hex'))
   })
 
-  return tx.toHex();
+  return { ...tx, hex: tx.toHex() };
 }

@@ -4,11 +4,12 @@ interface Input {
   prevout: { hash: string; index: number };
   script: string;
   witness: string;
-  sequence: string;
+  sequence: number;
   address?: string | null;
   coin: {
     value: number;
     address: string;
+    script: string
   };
 }
 
@@ -25,6 +26,8 @@ export interface BcoinTransactionInfo {
   inputs: Input[];
   outputs: Output[];
   confirmations: number;
+  hex: string,
+  witnessHash: string
 }
 
 export async function getTx(txHash: string): Promise<BcoinTransactionInfo | null> {
