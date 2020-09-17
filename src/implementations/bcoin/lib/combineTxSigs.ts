@@ -9,8 +9,8 @@ export async function combineTxSigs(
   const tx = Transaction.fromHex(_partialTx.hex)
 
   _signatures.forEach((signature, index) => {
-    tx.setInputScript(index, new Buffer(`47${signature}0121${_signerPublicKey}`, 'hex'))
+    tx.setInputScript(index, new Buffer(`48${signature}0121${_signerPublicKey}`, 'hex'))
   })
 
-  return { ...tx, hex: tx.toHex() };
+  return tx.toHex();
 }
