@@ -1,6 +1,5 @@
 import { PartialTransaction, SignAndSendStatus } from '../../../../types';
 import { combineTxSigs } from '../../lib/combineTxSigs';
-import { get } from 'lodash';
 import axios from 'axios';
 
 export async function signAndSendTransaction(
@@ -8,19 +7,18 @@ export async function signAndSendTransaction(
   _signatures: string[],
 ): Promise<SignAndSendStatus> {
   try {
-    const publicKey = '02c80fad12ee8895e7cf7ecf555c654f67896fa511929f6bd996733981fd943d1e';
+    const publicKey = '03c0eb971d742e75310c21c62dc3943b90b8e76270e9b4a5ec04fda5d677084864';
     const signed = await combineTxSigs(_partialTx, _signatures, publicKey);
     if (!signed) {
       return 'INVALID_SIGNATURES';
     }
 
-    const raw = get(signed, 'hex');
-    console.log(raw);
+    console.log(signed);
     const res = await axios.post(
       `${process.env.BCOIN_URL}`,
       {
         method: 'sendrawtransaction',
-        params: [ raw ]
+        params: [ signed ]
       },
       {
         auth: { username: 'x', password: process.env.BCOIN_PASSWORD || '' },
