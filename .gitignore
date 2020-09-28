@@ -6,3 +6,4 @@ error.log
 dockerBuild.npmrc
 /mount
 .idea
+.vscode
