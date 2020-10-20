@@ -1,6 +1,5 @@
 import { PartialTransaction, SignAndSendStatus } from '../../../../types';
 import { combineTxSigs } from '../../lib/combineTxSigs';
-import { get } from 'lodash';
 import axios from 'axios';
 
 export async function signAndSendTransaction(
@@ -15,13 +14,12 @@ export async function signAndSendTransaction(
       return 'INVALID_SIGNATURES';
     }
 
-    const raw = get(signed, 'hex');
-    console.log(raw);
+    console.log(signed);
     const res = await axios.post(
       `${process.env.BCOIN_URL}`,
       {
         method: 'sendrawtransaction',
-        params: [ raw ]
+        params: [ signed ]
       },
       {
         auth: { username: 'x', password: process.env.BCOIN_PASSWORD || '' },
