@@ -4,12 +4,13 @@ import { get } from 'lodash';
 import axios from 'axios';
 
 export async function signAndSendTransaction(
-  _partialTx: PartialTransaction,
-  _signatures: string[],
+  partialTx: PartialTransaction,
+  signatures: string[],
 ): Promise<SignAndSendStatus> {
   try {
-    const publicKey = '02c80fad12ee8895e7cf7ecf555c654f67896fa511929f6bd996733981fd943d1e';
-    const signed = await combineTxSigs(_partialTx, _signatures, publicKey);
+    const publicKey = '03de75e92d17d68353d2ac814e01741e9ed822073b381f423b3c6cb72e01150891';
+    console.log({partialTx, signatures})
+    const signed = await combineTxSigs(partialTx, signatures, publicKey);
     if (!signed) {
       return 'INVALID_SIGNATURES';
     }

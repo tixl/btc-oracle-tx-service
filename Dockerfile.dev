@@ -1,0 +1,4 @@
+FROM node:12
+WORKDIR /usr/src/app
+ADD package.json yarn.lock ./
+RUN yarn

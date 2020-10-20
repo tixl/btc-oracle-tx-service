@@ -5,11 +5,11 @@ export async function combineTxSigs(
   _partialTx: PartialTransaction, 
   _signatures: string[], 
   _signerPublicKey: string
-): Promise<string> {
+): Promise<object> {
   const tx = Transaction.fromHex(_partialTx.hex)
 
   _signatures.forEach((signature, index) => {
-    tx.setInputScript(index, new Buffer(`47${signature}0121${_signerPublicKey}`, 'hex'))
+    tx.setInputScript(index, new Buffer(`48${signature}0121${_signerPublicKey}`, 'hex'))
   })
 
   return { ...tx, hex: tx.toHex() };
