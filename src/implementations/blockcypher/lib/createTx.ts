@@ -12,7 +12,7 @@ export async function createTx(txData: AssetTransactionData[], fromAddress: stri
       outputs: txData.map((data) => ({ addresses: [data.toAddress], value: data.amount })),
     });
     if (res.data) {
-      return res.data as BlockcypherPartialTx;
+      return res.data as { tx: object; tosign: string[] };
     } else {
       throw 'No response body';
     }

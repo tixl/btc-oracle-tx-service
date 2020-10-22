@@ -9,17 +9,19 @@ app.use(express.json());
 let handlers: FullServiceHandlers;
 switch (process.env.SOURCE) {
   case 'BCOIN': {
-    console.log('USING BCOIN')
+    console.log('USING BCOIN');
+    // TODO: check if bcoin env vars are set
     handlers = BcoinHandlers;
     break;
   }
   case 'BLOCKCYPHER': {
-    console.log('USING BLOCKCYPHER')
+    console.log('USING BLOCKCYPHER');
+    // TODO: check if blockcypher env vars are set
     handlers = BlockcyperHandlers;
     break;
   }
   default:
-    console.log('USING BCOIN')
+    console.log('USING BCOIN');
     handlers = BcoinHandlers;
 }
 
@@ -49,11 +51,11 @@ app.post('/tx/create', async (req, res) => {
 });
 
 app.post('/tx/signAndSend', async (req, res) => {
-  const { partialTx, signatures } = req.body;
-  if (!partialTx || !signatures) {
+  const { partialTx, signatures, publicKey, tosign } = req.body;
+  if (!partialTx || !signatures || !publicKey || !tosign) {
     return res.status(400).send('Missing body');
   }
-  const result = await handlers.transactionService.signAndSendTransaction(partialTx, signatures);
+  const result = await handlers.transactionService.signAndSendTransaction(partialTx, tosign, signatures, publicKey);
   return res.json(result);
 });
 

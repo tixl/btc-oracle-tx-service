@@ -2,15 +2,15 @@ import { PartialTransaction } from '../../../types';
 import { Transaction } from 'bitcoinjs-lib';
 
 export async function combineTxSigs(
-  _partialTx: PartialTransaction, 
-  _signatures: string[], 
-  _signerPublicKey: string
+  partialTx: PartialTransaction, 
+  signatures: string[], 
+  signerPublicKey: string
 ): Promise<object> {
-  const tx = Transaction.fromHex(_partialTx.hex)
+  const tx = Transaction.fromHex(partialTx.hex)
 
-  _signatures.forEach((signature, index) => {
-    tx.setInputScript(index, new Buffer(`48${signature}0121${_signerPublicKey}`, 'hex'))
+  signatures.forEach((signature, index) => {
+    tx.setInputScript(index, new Buffer(`48${signature}0121${signerPublicKey}`, 'hex'))
   })
 
-  return tx.toHex();
+  return tx
 }

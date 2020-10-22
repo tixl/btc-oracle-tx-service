@@ -1,13 +1,13 @@
 export interface OracleHandlers {
   getTransactionInformation: (txReference: string, poolAddress: string) => Promise<TransactionInformation>;
-  validateSignature: (message: string, address: string, signature: string) => Promise<boolean>;
+  validateSignature: (message: string, address: string[], signature: string) => Promise<boolean>;
 }
 
 export interface TransactionServiceHandlers {
   createTransaction: (
     transactionData: AssetTransactionData[],
-  ) => Promise<{ status: CreateTransactionStatus; partialTx?: PartialTransaction }>;
-  signAndSendTransaction: (partialTx: PartialTransaction, signatures: string[]) => Promise<SignAndSendStatus>;
+  ) => Promise<{ status: CreateTransactionStatus; partialTx?: PartialTransaction; tosign?: string[] }>;
+  signAndSendTransaction: (partialTx: object, tosign: string[], signatures: string[], publicKey: string) => Promise<SignAndSendResponse>;
 }
 
 export type FullServiceHandlers = {
@@ -31,7 +31,7 @@ export interface OracleInterface {
 
 export type PartialTransaction = {
   toSign: string[];
-  hex: string
+  hex: string;
 } & any;
 
 export type FullTransaction = object;
@@ -50,14 +50,19 @@ export interface AssetTransactionData {
   amount: string;
 }
 
+export interface SignAndSendResponse {
+  status: SignAndSendStatus;
+  hash?: string;
+}
+
 export interface TransactionServiceInterface {
   assetSymbol: string;
   // Creates a transaction skeleton with the strings that have to be signed
   createTransaction: (
     transactionData: AssetTransactionData[],
-  ) => Promise<{ status: CreateTransactionStatus; partialTx?: PartialTransaction }>;
+  ) => Promise<{ status: CreateTransactionStatus; partialTx?: PartialTransaction; tosign?: string[] }>;
   // Sends the partial transaction back with signatures and returns a status
-  signAndSendTransaction: (partialTx: PartialTransaction, signatures: string[]) => Promise<SignAndSendStatus>;
+  signAndSendTransaction: (partialTx: object, tosign: string[], signatures: string[], publicKey: string) => Promise<SignAndSendResponse>;
 }
 
 export type GenerateSignatureStatus = 'OK' | 'OTHER_PART_FAILED' | 'NOT_ENOUGH_PARTICIPANTS' | 'ERROR';

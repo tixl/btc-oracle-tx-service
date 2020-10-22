@@ -1,16 +1,21 @@
 import axios from 'axios';
-import { BlockcypherPartialTx } from './createTx';
 
-export async function combineAndSend(partialTx: BlockcypherPartialTx, signatures: string[], publicKey: string) {
+export async function combineAndSend(
+  partialTx: object,
+  tosign: string[],
+  signatures: string[],
+  publicKey: string,
+): Promise<string> {
   try {
     const res = await axios.post(`${process.env.BLOCKCYPHER_URL}/txs/new`, {
       tx: partialTx,
-      tosign: partialTx.tosign,
+      tosign: tosign,
       signatures,
       pubkeys: signatures.map((_x) => publicKey),
     });
-    if (res.data && res.data.tx && res.data.tx.received) {
-      return true;
+    console.log(res.data);
+    if (res.data && res.data.tx && res.data.tx.hash) {
+      return res.data.tx.hash;
     } else {
       throw 'No response body';
     }

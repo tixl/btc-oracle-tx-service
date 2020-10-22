@@ -1,17 +1,18 @@
-import { PartialTransaction, SignAndSendStatus } from '../../../../types';
+import { SignAndSendResponse } from '../../../../types';
 import { combineTxSigs } from '../../lib/combineTxSigs';
 import axios from 'axios';
 
 export async function signAndSendTransaction(
-  partialTx: PartialTransaction,
+  partialTx: object,
+  _tosign: string[],
   signatures: string[],
-): Promise<SignAndSendStatus> {
+  publicKey: string,
+): Promise<SignAndSendResponse> {
   try {
-    const publicKey = '03de75e92d17d68353d2ac814e01741e9ed822073b381f423b3c6cb72e01150891';
-    console.log({partialTx, signatures})
+    console.log({ partialTx, signatures });
     const signed = await combineTxSigs(partialTx, signatures, publicKey);
     if (!signed) {
-      return 'INVALID_SIGNATURES';
+      return { status: 'INVALID_SIGNATURES' };
     }
 
     console.log(signed);
@@ -19,15 +20,18 @@ export async function signAndSendTransaction(
       `${process.env.BCOIN_URL}`,
       {
         method: 'sendrawtransaction',
-        params: [ signed ]
+        params: [signed],
       },
       {
         auth: { username: 'x', password: process.env.BCOIN_PASSWORD || '' },
-      });
+      },
+    );
     if (res.data) {
       console.log(res.data);
     }
-    return 'OK';
+    let hash = 'none';
+    // TODO: set hash
+    return { status: 'OK', hash };
   } catch (error) {
     if (error.response) {
       console.log(error.response);
@@ -35,6 +39,6 @@ export async function signAndSendTransaction(
       console.log(error);
     }
 
-    return 'ERROR';
+    return { status: 'ERROR' };
   }
 }
