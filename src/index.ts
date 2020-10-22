@@ -47,6 +47,18 @@ app.post('/tx/create', async (req, res) => {
     return res.status(400).send('Missing parameters');
   }
   const result = await handlers.transactionService.createTransaction(transactionData as AssetTransactionData[]);
+  switch (result.status) {
+    case 'OK':
+      return res.json(result);
+    case 'INSUFFICIENT_FUNDS':
+      return res.status(400).send(result.status);
+    case 'INVALID_RECEIVER_ADDRESS':
+      return res.status(400).send(result.status);
+    case 'INVALID_SENDER_ADDRESS':
+      return res.status(400).send(result.status);
+    default:
+      return res.status(500).send(result.status);
+  }
   return res.json(result);
 });
 
@@ -56,7 +68,16 @@ app.post('/tx/signAndSend', async (req, res) => {
     return res.status(400).send('Missing body');
   }
   const result = await handlers.transactionService.signAndSendTransaction(partialTx, tosign, signatures, publicKey);
-  return res.json(result);
+  switch (result.status) {
+    case 'OK':
+      return res.json(result);
+    case 'ALREADY_KNOWN':
+      return res.status(400).send(result.status);
+    case 'INVALID_SIGNATURES':
+      return res.status(400).send(result.status);
+    default:
+      return res.status(500).send(result.status);
+  }
 });
 
 const port = process.env.PORT || 4000;
