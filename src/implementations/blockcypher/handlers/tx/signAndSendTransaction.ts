@@ -12,6 +12,9 @@ export async function signAndSendTransaction(
     return { status: 'OK', hash };
   } catch (error) {
     console.log(error);
+    if (error === 'ALREADY_EXISTS') {
+      return { status: 'ALREADY_KNOWN' };
+    }
     return { status: 'ERROR' };
   }
 }

@@ -21,6 +21,7 @@ export async function getTransactionInformation(
       result = { status: 'ACCEPTED', receivedAmount, sender };
     }
   } catch (error) {
+    // TODO: LOGGER
     result = { status: 'ERROR', error: error.response.data } as any;
   }
 
