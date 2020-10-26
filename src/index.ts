@@ -96,4 +96,4 @@ app.post('/tx/signAndSend', async (req, res) => {
 
 const port = process.env.PORT || 4000;
 app.listen(port);
-console.log(`Service listening on port ${port}`);
+logger.info(`Service listening on port ${port}`);

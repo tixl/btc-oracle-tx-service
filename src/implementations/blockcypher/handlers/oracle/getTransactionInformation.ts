@@ -29,7 +29,7 @@ export async function getTransactionInformation(
     logger.error('getTransactionInfo error', { error: errormsg });
     result = { status: 'ERROR', error: errormsg } as any;
   }
-  logger.info('getTransactionInformation return', { status, txReference });
+  logger.info('getTransactionInformation return', { status: result.status, txReference });
   return result;
 }
 
