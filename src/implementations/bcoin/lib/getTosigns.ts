@@ -1,10 +1,10 @@
-import { BcoinTransactionInfo } from './getTx';
+import { BcoinTransactionInfo } from '../api/getTx';
 import { map } from 'lodash';
 import { Transaction, crypto } from 'bitcoinjs-lib';
 
-export async function getTosigns(_txs: BcoinTransactionInfo): Promise<(string | null)[]> {
-  return map(_txs.inputs, (input, index) => {
-    const tx = Transaction.fromHex(_txs.hex);
+export async function getTosigns(txs: BcoinTransactionInfo): Promise<string[]> {
+  return map(txs.inputs, (input, index) => {
+    const tx = Transaction.fromHex(txs.hex);
     tx.setInputScript(index, Buffer.from(input.coin.script, 'hex'));
 
     let buffer = tx.toBuffer()

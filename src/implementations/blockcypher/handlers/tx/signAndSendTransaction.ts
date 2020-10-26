@@ -8,13 +8,13 @@ export async function signAndSendTransaction(
   publicKey: string,
 ): Promise<SignAndSendResponse> {
   try {
-    const hash = await combineAndSend(partialTx, tosign, signatures, publicKey);
+    const { hash, alreadyExists } = await combineAndSend(partialTx, tosign, signatures, publicKey);
+    if (alreadyExists) {
+      return { status: 'ALREADY_KNOWN', hash };
+    }
     return { status: 'OK', hash };
   } catch (error) {
     console.log(error);
-    if (error === 'ALREADY_EXISTS') {
-      return { status: 'ALREADY_KNOWN' };
-    }
     return { status: 'ERROR' };
   }
 }

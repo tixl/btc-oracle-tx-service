@@ -71,7 +71,7 @@ app.post('/tx/signAndSend', async (req, res) => {
     case 'OK':
       return res.json(result);
     case 'ALREADY_KNOWN':
-      return res.status(400).json({ status: result.status });
+      return res.status(200).json(result);
     case 'INVALID_SIGNATURES':
       return res.status(400).json({ status: result.status });
     default:

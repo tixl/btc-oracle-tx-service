@@ -1,4 +1,4 @@
-import { postValidateSignature } from "../../lib/postValidateSignature";
+import { postValidateSignature } from "../../api/postValidateSignature";
 
 export async function validateSignature(message: string, address: string | string[], signature: string): Promise<boolean> {
   if (Array.isArray(address)) {

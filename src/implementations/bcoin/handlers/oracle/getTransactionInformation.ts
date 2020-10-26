@@ -1,5 +1,5 @@
 import { TransactionInformation } from '../../../../types';
-import { getTx, BcoinTransactionInfo } from '../../lib/getTx';
+import { getTx, BcoinTransactionInfo } from '../../api/getTx';
 
 const REQUIRED_CONFIRMATIONS = process.env.REQUIRED_CONFIRMATIONS || 6;
 

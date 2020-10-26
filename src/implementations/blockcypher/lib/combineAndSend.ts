@@ -5,7 +5,7 @@ export async function combineAndSend(
   tosign: string[],
   signatures: string[],
   publicKey: string,
-): Promise<string> {
+): Promise<{hash: string, alreadyExists:boolean}> {
   try {
     const payload = {
       tx: partialTx,
@@ -18,7 +18,7 @@ export async function combineAndSend(
     //TODO: Logger
     console.log(res.data);
     if (res.data && res.data.tx && res.data.tx.hash) {
-      return res.data.tx.hash;
+      return {hash: res.data.tx.hash, alreadyExists: false};
     } else {
       throw 'No response body';
     }
@@ -27,7 +27,7 @@ export async function combineAndSend(
     console.log(error.response.data);
     const errors = error.response.data.errors as { error: string }[];
     if (errors.find((x) => x.error.endsWith('already exists.'))) {
-      throw 'ALREADY_EXISTS';
+      return {hash: error.response.data.tx.hash, alreadyExists: true};
     }
     throw 'ERROR IN REQUEST';
   }

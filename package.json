@@ -7,7 +7,9 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "start:watch": "nodemon",
-    "build": "tsc"
+    "build": "tsc",
+    "bcoin-setup": "ts-node src/implementations/bcoin/setup.ts",
+    "bcoin-info": "ts-node src/implementations/bcoin/info.ts"
   },
   "dependencies": {
     "@types/bs58": "^4.0.1",
