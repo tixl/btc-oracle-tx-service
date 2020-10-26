@@ -1,6 +1,7 @@
 import { TransactionInformation } from '../../../../types';
 import { getTx, BlockCypherTransaction } from '../../lib/getTx';
 import * as _ from 'lodash';
+import { logger } from '../../../../log';
 
 const REQUIRED_CONFIRMATIONS = process.env.REQUIRED_CONFIRMATIONS || 6;
 
@@ -21,10 +22,14 @@ export async function getTransactionInformation(
       result = { status: 'ACCEPTED', receivedAmount, sender };
     }
   } catch (error) {
-    // TODO: LOGGER
-    result = { status: 'ERROR', error: error.response.data } as any;
+    let errormsg = error;
+    if (error.response && error.response.data) {
+      errormsg = error.response.data;
+    }
+    logger.error('getTransactionInfo error', { error: errormsg });
+    result = { status: 'ERROR', error: errormsg } as any;
   }
-
+  logger.info('getTransactionInformation return', { status, txReference });
   return result;
 }
 

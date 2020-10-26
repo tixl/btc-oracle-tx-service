@@ -1,7 +1,18 @@
 import express from 'express';
 import { FullServiceHandlers, AssetTransactionData } from './types';
 import { BcoinHandlers, BlockcyperHandlers } from './implementations';
+import { configureLogger, logger } from './log';
 require('dotenv').config();
+
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'local_with_logger') {
+  configureLogger(
+    process.env.APEX_URL,
+    process.env.APEX_AUTH,
+    process.env.APEX_PROJECT,
+    process.env.NET,
+    process.env.SERVICE,
+  );
+}
 
 const app = express();
 app.use(express.json());
@@ -9,24 +20,25 @@ app.use(express.json());
 let handlers: FullServiceHandlers;
 switch (process.env.SOURCE) {
   case 'BCOIN': {
-    console.log('USING BCOIN');
+    logger.info('USING BCOIN');
     // TODO: check if bcoin env vars are set
     handlers = BcoinHandlers;
     break;
   }
   case 'BLOCKCYPHER': {
-    console.log('USING BLOCKCYPHER');
+    logger.info('USING BLOCKCYPHER');
     // TODO: check if blockcypher env vars are set
     handlers = BlockcyperHandlers;
     break;
   }
   default:
-    console.log('USING BCOIN');
+    logger.info('USING BCOIN');
     handlers = BcoinHandlers;
 }
 
 app.get('/oracle/transactionInfo', async (req, res) => {
   const { reference, poolAddress } = req.query;
+  logger.info('Called /oracle/transactionInfo', { reference, poolAddress });
   if (!reference || !poolAddress) return res.status(400).json({ status: 'MISSING_PARAMS' });
   const result = await handlers.oracle.getTransactionInformation(reference as string, poolAddress as string);
   return res.json(result);
@@ -34,6 +46,7 @@ app.get('/oracle/transactionInfo', async (req, res) => {
 
 app.post('/oracle/validateSignature', async (req, res) => {
   const { message, address, signature } = req.body;
+  logger.info('Called /oracle/validateSignature', { message, address, signature });
   if (!message || !address || !signature) {
     return res.status(400).json({ status: 'MISSING_BODY' });
   }
@@ -43,6 +56,7 @@ app.post('/oracle/validateSignature', async (req, res) => {
 
 app.post('/tx/create', async (req, res) => {
   const { transactionData } = req.body;
+  logger.info('Called /tx/create');
   if (!transactionData) {
     return res.status(400).json({ status: 'MISSING_BODY' });
   }
@@ -63,6 +77,7 @@ app.post('/tx/create', async (req, res) => {
 
 app.post('/tx/signAndSend', async (req, res) => {
   const { partialTx, signatures, publicKey, tosign } = req.body;
+  logger.info('Called /tx/signAndSend');
   if (!partialTx || !signatures || !publicKey || !tosign) {
     return res.status(400).json({ status: 'MISSING_BODY' });
   }

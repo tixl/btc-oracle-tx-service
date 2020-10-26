@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { logger } from '../../../log';
 
 export async function combineAndSend(
   partialTx: object,
@@ -15,16 +16,17 @@ export async function combineAndSend(
     };
     console.log(JSON.stringify(payload, null, 2));
     const res = await axios.post(`${process.env.BLOCKCYPHER_URL}/txs/send`, payload);
-    //TODO: Logger
-    console.log(res.data);
     if (res.data && res.data.tx && res.data.tx.hash) {
       return {hash: res.data.tx.hash, alreadyExists: false};
     } else {
       throw 'No response body';
     }
   } catch (error) {
-    //TODO: Logger
-    console.log(error.response.data);
+    let errormsg = error;
+    if (error.response && error.response.data) {
+      errormsg = error.response.data;
+    }
+    logger.error('combineAndSend error', { error: errormsg });
     const errors = error.response.data.errors as { error: string }[];
     if (errors.find((x) => x.error.endsWith('already exists.'))) {
       return {hash: error.response.data.tx.hash, alreadyExists: true};

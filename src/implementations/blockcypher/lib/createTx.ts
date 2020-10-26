@@ -14,12 +14,9 @@ export async function createTx(txData: AssetTransactionData[], fromAddress: stri
     if (res.data) {
       return res.data as { tx: object; tosign: string[] };
     } else {
-      //TODO: Logger
       throw 'No response body';
     }
   } catch (error) {
-    //TODO: Logger
-    console.log(error.response.data);
     throw error;
   }
 }
