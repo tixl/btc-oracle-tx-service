@@ -1,7 +1,8 @@
 import express from 'express';
-import { FullServiceHandlers, AssetTransactionData } from './types';
+import { FullServiceHandlers, AssetTransactionData, TransactionInformation } from './types';
 import { BcoinHandlers, BlockcyperHandlers } from './implementations';
 import { configureLogger, logger } from './log';
+import NodeCache from 'node-cache';
 require('dotenv').config();
 
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'local_with_logger') {
@@ -36,12 +37,22 @@ switch (process.env.SOURCE) {
     handlers = BcoinHandlers;
 }
 
+const txInfoCache = new NodeCache({ stdTTL: 10, checkperiod: 1 });
 app.get('/oracle/transactionInfo', async (req, res) => {
   const { reference, poolAddress } = req.query;
   logger.info('Called /oracle/transactionInfo', { reference, poolAddress });
   if (!reference || !poolAddress) return res.status(400).json({ status: 'MISSING_PARAMS' });
-  const result = await handlers.oracle.getTransactionInformation(reference as string, poolAddress as string);
-  return res.json(result);
+  const key = `${reference}-${poolAddress}`;
+  const fromCache: TransactionInformation | undefined = txInfoCache.get(key);
+  if (fromCache) {
+    logger.info('delivering from cache', { key });
+    return res.json(fromCache);
+  } else {
+    logger.info('no cache hit', { key });
+    const result = await handlers.oracle.getTransactionInformation(reference as string, poolAddress as string);
+    txInfoCache.set(key, result);
+    return res.json(result);
+  }
 });
 
 app.post('/oracle/validateSignature', async (req, res) => {
