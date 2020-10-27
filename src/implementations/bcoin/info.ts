@@ -1,5 +1,5 @@
 require('dotenv').config();
-import { walletInfo } from './lib/walletInfo';
+import { walletInfo } from './api/walletInfo';
 
 export async function info() {
   const res = await walletInfo();

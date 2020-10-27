@@ -11,6 +11,7 @@ RUN rm -f .yarnrc
 
 ADD tsconfig.json ./
 ADD src ./src
+ADD typings ./typings
 RUN yarn build
 RUN mkdir lib/tmp
 RUN mkdir tmp
