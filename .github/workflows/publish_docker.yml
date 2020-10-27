@@ -35,7 +35,7 @@ jobs:
         repo: tixl/${{ steps.extract_branch.outputs.branch }}-btc-oracle
         region: eu-central-1
         tags: latest,${{ github.sha }}
-        extra_build_args: --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_ACTIONS_TOKEN }}
+        extra_build_args: --build-arg GITHUB_TOKEN=${{ secrets.GH_ACTIONS_TOKEN }}
     - name: Slack Notify Success
       continue-on-error: true
       if: success()
