@@ -7,7 +7,7 @@ export type BlockcypherPartialTx = {
 
 export async function createTx(txData: AssetTransactionData[], fromAddress: string) {
   try {
-    const res = await axios.post(`${process.env.BLOCKCYPHER_URL}/txs/new`, {
+    const res = await axios.post(`${process.env.BLOCKCYPHER_URL}/txs/new?token=${process.env.BLOCKCYPHER_TOKEN}`, {
       inputs: [{ addresses: [fromAddress] }],
       outputs: txData.map((data) => ({ addresses: [data.toAddress], value: data.amount })),
     });

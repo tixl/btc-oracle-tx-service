@@ -6,7 +6,7 @@ export async function combineAndSend(
   tosign: string[],
   signatures: string[],
   publicKey: string,
-): Promise<{hash: string, alreadyExists:boolean}> {
+): Promise<{ hash: string; alreadyExists: boolean }> {
   try {
     const payload = {
       tx: partialTx,
@@ -15,9 +15,12 @@ export async function combineAndSend(
       pubkeys: signatures.map((_x) => publicKey),
     };
     console.log(JSON.stringify(payload, null, 2));
-    const res = await axios.post(`${process.env.BLOCKCYPHER_URL}/txs/send`, payload);
+    const res = await axios.post(
+      `${process.env.BLOCKCYPHER_URL}/txs/send?token=${process.env.BLOCKCYPHER_TOKEN}`,
+      payload,
+    );
     if (res.data && res.data.tx && res.data.tx.hash) {
-      return {hash: res.data.tx.hash, alreadyExists: false};
+      return { hash: res.data.tx.hash, alreadyExists: false };
     } else {
       throw 'No response body';
     }
@@ -29,7 +32,7 @@ export async function combineAndSend(
     logger.error('combineAndSend error', { error: errormsg });
     const errors = error.response.data.errors as { error: string }[];
     if (errors.find((x) => x.error.endsWith('already exists.'))) {
-      return {hash: error.response.data.tx.hash, alreadyExists: true};
+      return { hash: error.response.data.tx.hash, alreadyExists: true };
     }
     throw 'ERROR IN REQUEST';
   }

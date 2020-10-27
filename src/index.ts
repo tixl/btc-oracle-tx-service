@@ -28,6 +28,10 @@ switch (process.env.SOURCE) {
   }
   case 'BLOCKCYPHER': {
     logger.info('USING BLOCKCYPHER');
+    const token = process.env.BLOCKCYPHER_TOKEN;
+    if (!token || token === '') {
+      throw 'Missing Blockcypher token';
+    }
     // TODO: check if blockcypher env vars are set
     handlers = BlockcyperHandlers;
     break;

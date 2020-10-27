@@ -19,7 +19,7 @@ export interface BlockCypherTransaction {
 
 export async function getTx(txHash: string) {
   try {
-    const res = await axios.get(`${process.env.BLOCKCYPHER_URL}/txs/${txHash}`);
+    const res = await axios.get(`${process.env.BLOCKCYPHER_URL}/txs/${txHash}?token=${process.env.BLOCKCYPHER_TOKEN}`);
     if (res.data) {
       return res.data as BlockCypherTransaction;
     } else throw 'Empty body';
