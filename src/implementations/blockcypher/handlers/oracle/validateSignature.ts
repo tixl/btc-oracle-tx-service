@@ -1,4 +1,4 @@
-import { validateSignature as libValidateSignature } from '../../lib/ValidateSignature';
+import { validateSignature as libValidateSignature } from '../../lib/validateSignature';
 
 export async function validateSignature(
   message: string,
