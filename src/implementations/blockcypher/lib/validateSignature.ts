@@ -1,7 +1,5 @@
-import bitcoreMessage from 'bitcore-message';
+import bitcoinMessage from 'bitcoinjs-message';
 
 export async function validateSignature(address: string, signature: string, message: string): Promise<boolean> {
-  const messageToVerify = bitcoreMessage(message);
-
-  return messageToVerify.verify(address, signature);
+  return bitcoinMessage.verify(message, address, signature, undefined, true);
 }
