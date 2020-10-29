@@ -31,7 +31,7 @@ export async function combineAndSend(
     }
     logger.error('combineAndSend error', { error: errormsg });
     const errors = error.response.data.errors as { error: string }[];
-    if (errors.find((x) => x.error.endsWith('already exists.'))) {
+    if (errors.find((x) => x.error.endsWith('already exists.') || x.error.endsWith('already in pool'))) {
       return { hash: error.response.data.tx.hash, alreadyExists: true };
     }
     throw 'ERROR IN REQUEST';

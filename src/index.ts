@@ -61,7 +61,7 @@ app.get('/oracle/transactionInfo', async (req, res) => {
 
 app.post('/oracle/validateSignature', async (req, res) => {
   const { message, address, signature } = req.body;
-  logger.info('Called /oracle/validateSignature', { message, address, signature });
+  logger.info('Called /oracle/validateSignature', { msg: message, address, signature });
   if (!message || !address || !signature) {
     return res.status(400).json({ status: 'MISSING_BODY' });
   }
