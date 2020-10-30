@@ -14,6 +14,7 @@
   "dependencies": {
     "@types/bs58": "^4.0.1",
     "apex-logs-winston": "^1.1.0",
+    "async-mutex": "^0.2.4",
     "axios": "^0.20.0",
     "bitcoinjs-lib": "^5.1.10",
     "bitcoinjs-message": "^2.1.3",

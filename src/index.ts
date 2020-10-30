@@ -3,6 +3,7 @@ import { FullServiceHandlers, AssetTransactionData, TransactionInformation } fro
 import { BcoinHandlers, BlockcyperHandlers } from './implementations';
 import { configureLogger, logger } from './log';
 import NodeCache from 'node-cache';
+import { Mutex } from 'async-mutex';
 require('dotenv').config();
 
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'local_with_logger') {
@@ -40,23 +41,40 @@ switch (process.env.SOURCE) {
     logger.info('USING BCOIN');
     handlers = BcoinHandlers;
 }
-
+const mx = new Mutex();
 const txInfoCache = new NodeCache({ stdTTL: 10, checkperiod: 1 });
+
+async function getTransactionInfoResult(reference: string, poolAddress: string) {
+  const release = await mx.acquire();
+  try {
+    const key = `${reference}-${poolAddress}`;
+    const fromCache: TransactionInformation | undefined = txInfoCache.get(key);
+    if (fromCache) {
+      logger.info('delivering from cache', { key });
+      return fromCache;
+    } else {
+      logger.info('no cache hit', { key });
+      const result = await handlers.oracle.getTransactionInformation(reference as string, poolAddress as string);
+      txInfoCache.set(key, result);
+      return result;
+    }
+  } catch (error) {
+    logger.error('Error getTransactionInfoResult', { error });
+    return null;
+  } finally {
+    release();
+  }
+}
+
 app.get('/oracle/transactionInfo', async (req, res) => {
   const { reference, poolAddress } = req.query;
   logger.info('Called /oracle/transactionInfo', { reference, poolAddress });
   if (!reference || !poolAddress) return res.status(400).json({ status: 'MISSING_PARAMS' });
-  const key = `${reference}-${poolAddress}`;
-  const fromCache: TransactionInformation | undefined = txInfoCache.get(key);
-  if (fromCache) {
-    logger.info('delivering from cache', { key });
-    return res.json(fromCache);
-  } else {
-    logger.info('no cache hit', { key });
-    const result = await handlers.oracle.getTransactionInformation(reference as string, poolAddress as string);
-    txInfoCache.set(key, result);
-    return res.json(result);
+  const result = await getTransactionInfoResult(reference as string, poolAddress as string);
+  if (result === null) {
+    res.status(500);
   }
+  return res.json(result);
 });
 
 app.post('/oracle/validateSignature', async (req, res) => {
