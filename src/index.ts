@@ -19,6 +19,12 @@ if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'local_wit
 const app = express();
 app.use(express.json());
 
+const BASE_FEE_SAT = process.env.BASE_FEE_SAT ? Number(process.env.BASE_FEE_SAT) : null;
+const FEE_PER_OUTPUT_SAT = process.env.FEE_PER_OUTPUT_SAT ? Number(process.env.FEE_PER_OUTPUT_SAT) : null;
+const SET_FEE_CAP = process.env.SET_FEE_CAP;
+
+logger.info('Fee settings', { BASE_FEE_SAT, FEE_PER_OUTPUT_SAT, SET_FEE_CAP });
+
 let handlers: FullServiceHandlers;
 switch (process.env.SOURCE) {
   case 'BCOIN': {
