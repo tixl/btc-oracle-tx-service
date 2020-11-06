@@ -25,7 +25,7 @@ jobs:
       run: echo -e '[url "https://github.com/"]\n  insteadOf = "git@github.com:"' >> ~/.gitconfig
     - uses: actions/checkout@v1
       with:
-        token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
+        token: ${{ secrets.GH_ACTIONS_TOKEN }}
         submodules: true
     - uses: tixl/aws-ecr-action@master
       with:
