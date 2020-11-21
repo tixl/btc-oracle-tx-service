@@ -14,6 +14,7 @@ export async function createTransaction(
     if (error.response && error.response.data) {
       errormsg = error.response.data;
     }
+    console.log(JSON.stringify(errormsg, null, 2));
     logger.error('Create transaction error', { error: errormsg });
     return { status: 'ERROR' };
   }

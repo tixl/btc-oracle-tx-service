@@ -1,10 +1,10 @@
+require('dotenv').config();
 import express from 'express';
 import { FullServiceHandlers, AssetTransactionData, TransactionInformation } from './types';
 import { BcoinHandlers, BlockcyperHandlers } from './implementations';
 import { configureLogger, logger } from './log';
 import NodeCache from 'node-cache';
 import { Mutex } from 'async-mutex';
-require('dotenv').config();
 
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'local_with_logger') {
   configureLogger(
