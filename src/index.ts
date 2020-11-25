@@ -1,6 +1,6 @@
 require('dotenv').config();
 import express from 'express';
-import { FullServiceHandlers, AssetTransactionData, TransactionInformation } from './types';
+import { FullServiceHandlers, AssetTransactionData, TransactionInformation, CreateTransactionResponse } from './types';
 import { BcoinHandlers, BlockcyperHandlers } from './implementations';
 import { configureLogger, logger } from './log';
 import NodeCache from 'node-cache';
@@ -47,19 +47,19 @@ switch (process.env.SOURCE) {
     logger.info('USING BCOIN');
     handlers = BcoinHandlers;
 }
-const mx = new Mutex();
+const txInfoMx = new Mutex();
 const txInfoCache = new NodeCache({ stdTTL: 10, checkperiod: 1 });
 
 async function getTransactionInfoResult(reference: string, poolAddress: string) {
-  const release = await mx.acquire();
+  const release = await txInfoMx.acquire();
   try {
     const key = `${reference}-${poolAddress}`;
     const fromCache: TransactionInformation | undefined = txInfoCache.get(key);
     if (fromCache) {
-      logger.info('delivering from cache', { key });
+      logger.info('Tx info delivering from cache', { key });
       return fromCache;
     } else {
-      logger.info('no cache hit', { key });
+      logger.info('Tx info no cache hit', { key });
       const result = await handlers.oracle.getTransactionInformation(reference as string, poolAddress as string);
       txInfoCache.set(key, result);
       return result;
@@ -93,13 +93,41 @@ app.post('/oracle/validateSignature', async (req, res) => {
   return res.json(result);
 });
 
+const createTxMx = new Mutex();
+const createTxCache = new NodeCache({ stdTTL: 10, checkperiod: 1 });
+
+async function createTransaction(transactionData: AssetTransactionData[]): Promise<CreateTransactionResponse | null> {
+  const release = await createTxMx.acquire();
+  try {
+    const key = JSON.stringify(transactionData);
+    const fromCache: CreateTransactionResponse | undefined = createTxCache.get(key);
+    if (fromCache) {
+      logger.info('Create tx delivering from cache', { key });
+      return fromCache;
+    } else {
+      logger.info('Create tx no cache hit', { key });
+      const result = await handlers.transactionService.createTransaction(transactionData as AssetTransactionData[]);
+      createTxCache.set(key, result);
+      return result;
+    }
+  } catch (error) {
+    return null;
+  } finally {
+    release();
+  }
+}
+
 app.post('/tx/create', async (req, res) => {
   const { transactionData } = req.body;
+
   logger.info('Called /tx/create');
   if (!transactionData) {
     return res.status(400).json({ status: 'MISSING_BODY' });
   }
-  const result = await handlers.transactionService.createTransaction(transactionData as AssetTransactionData[]);
+  const result = await createTransaction(transactionData as AssetTransactionData[]);
+  if (result === null) {
+    return res.status(500).json({ status: 'ERROR' });
+  }
   switch (result.status) {
     case 'OK':
       return res.json(result);

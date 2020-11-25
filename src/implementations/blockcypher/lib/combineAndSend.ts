@@ -15,6 +15,7 @@ export async function combineAndSend(
       pubkeys: signatures.map((_x) => publicKey),
     };
     console.log(JSON.stringify(payload, null, 2));
+    logger.info('request to blockcypher POST /txs/send');
     const res = await axios.post(
       `${process.env.BLOCKCYPHER_URL}/txs/send?token=${process.env.BLOCKCYPHER_TOKEN}`,
       payload,

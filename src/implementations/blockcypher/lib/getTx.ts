@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { logger } from '../../../log';
 
 interface Input {
   output_value: number;
@@ -19,6 +20,7 @@ export interface BlockCypherTransaction {
 
 export async function getTx(txHash: string) {
   try {
+    logger.info('request to blockcypher GET /txs/');
     const res = await axios.get(`${process.env.BLOCKCYPHER_URL}/txs/${txHash}?token=${process.env.BLOCKCYPHER_TOKEN}`);
     if (res.data) {
       return res.data as BlockCypherTransaction;

@@ -3,11 +3,19 @@ export interface OracleHandlers {
   validateSignature: (message: string, address: string[], signature: string) => Promise<boolean>;
 }
 
+export type CreateTransactionResponse = {
+  status: CreateTransactionStatus;
+  partialTx?: PartialTransaction;
+  tosign?: string[];
+};
 export interface TransactionServiceHandlers {
-  createTransaction: (
-    transactionData: AssetTransactionData[],
-  ) => Promise<{ status: CreateTransactionStatus; partialTx?: PartialTransaction; tosign?: string[] }>;
-  signAndSendTransaction: (partialTx: object, tosign: string[], signatures: string[], publicKey: string) => Promise<SignAndSendResponse>;
+  createTransaction: (transactionData: AssetTransactionData[]) => Promise<CreateTransactionResponse>;
+  signAndSendTransaction: (
+    partialTx: object,
+    tosign: string[],
+    signatures: string[],
+    publicKey: string,
+  ) => Promise<SignAndSendResponse>;
 }
 
 export type FullServiceHandlers = {
@@ -62,7 +70,12 @@ export interface TransactionServiceInterface {
     transactionData: AssetTransactionData[],
   ) => Promise<{ status: CreateTransactionStatus; partialTx?: PartialTransaction; tosign?: string[] }>;
   // Sends the partial transaction back with signatures and returns a status
-  signAndSendTransaction: (partialTx: object, tosign: string[], signatures: string[], publicKey: string) => Promise<SignAndSendResponse>;
+  signAndSendTransaction: (
+    partialTx: object,
+    tosign: string[],
+    signatures: string[],
+    publicKey: string,
+  ) => Promise<SignAndSendResponse>;
 }
 
 export type GenerateSignatureStatus = 'OK' | 'OTHER_PART_FAILED' | 'NOT_ENOUGH_PARTICIPANTS' | 'ERROR';
