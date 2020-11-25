@@ -17,11 +17,18 @@ function mapTxData(txData: AssetTransactionData[], fromAddress: string, feePerOu
   };
 }
 
+function getPreference(): string {
+  const fromEnv = process.env.PREFERENCE;
+  if (fromEnv === 'medium' || fromEnv === 'low' || fromEnv === 'high') return fromEnv;
+  else return 'medium';
+}
+
 export async function createTx(txData: AssetTransactionData[], fromAddress: string) {
   try {
     const countOutputs = txData.length;
     const payloadForFeeTx = mapTxData(txData, fromAddress);
-    const firstTx = await blockcypherCreateTx(payloadForFeeTx);
+    const preference = getPreference();
+    const firstTx = await blockcypherCreateTx({ ...payloadForFeeTx, preference });
     const fees = firstTx.tx.fees;
     const feePerOutput = Math.ceil(fees / countOutputs);
     logger.info('Got fees', { fees, feePerOutput });
